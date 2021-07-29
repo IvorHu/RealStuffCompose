@@ -1,7 +1,7 @@
 package com.ivor.realstuff.buildSrc
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-rc01"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.0.0"
 
     object Material {
         const val core = "com.google.android.material:material:1.3.0"
@@ -55,12 +55,7 @@ object Libs {
         }
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.0.0-beta09"
-
-            @get:JvmStatic
-            val snapshotUrl: String
-                get() = "https://androidx.dev/snapshots/builds/$snapshot/artifacts/repository/"
+            const val version = "1.0.0"
 
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
