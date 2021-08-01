@@ -19,4 +19,13 @@ object Graph {
     }
     val iosRepository by lazy { StuffRepository(HomeCategory.IOS.category, HomeCategory.IOS.type) }
     val webRepository by lazy { StuffRepository(HomeCategory.WEB.category, HomeCategory.WEB.type) }
+
+    fun repositoryFromTab(tab: HomeCategory): StuffRepository {
+        return when (tab) {
+            HomeCategory.Image -> imagesRepository
+            HomeCategory.ANDROID -> androidRepository
+            HomeCategory.IOS -> iosRepository
+            HomeCategory.WEB -> webRepository
+        }
+    }
 }

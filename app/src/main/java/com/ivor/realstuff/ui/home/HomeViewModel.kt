@@ -5,8 +5,7 @@ import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ivor.realstuff.data.Graph
-import com.ivor.realstuff.data.StuffRepository
+import com.ivor.realstuff.data.Graph.repositoryFromTab
 import com.ivor.realstuff.model.Stuff
 import com.ivor.realstuff.util.HomeCategory
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +32,7 @@ class HomeViewModel : ViewModel() {
 
         viewModelScope.launch {
             _state.value = _state.value.copy(loading = true)
-            val stuffs = repositoryFromTab().fetch()
+            val stuffs = repositoryFromTab(_state.value.tab).fetch()
 
             if (isActive) {
                 _state.value = _state.value.copy(loading = false, stuffs = stuffs)
@@ -62,14 +61,6 @@ class HomeViewModel : ViewModel() {
         _state.value = _state.value.copy(tab = tab, stuffs = stuffs)
     }
 
-    private fun repositoryFromTab(tab: HomeCategory = _state.value.tab): StuffRepository {
-        return when (tab) {
-            HomeCategory.Image -> Graph.imagesRepository
-            HomeCategory.ANDROID -> Graph.androidRepository
-            HomeCategory.IOS -> Graph.iosRepository
-            HomeCategory.WEB -> Graph.webRepository
-        }
-    }
 }
 
 data class HomeViewState(

@@ -8,10 +8,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -31,7 +28,7 @@ import com.ivor.realstuff.util.supportWideScreen
 private const val LOAD_MORE_THRESHOLD = 0.6F
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(selectArticle: (String) -> Unit) {
     val viewModel: HomeViewModel = viewModel()
     val state by viewModel.state.collectAsState()
     // TODO: 2021/7/19 modify refresh condition
@@ -53,7 +50,7 @@ fun HomeScreen() {
                     viewModel.refresh()
                 }
             ) {
-                ListContent(state, viewModel)
+                ListContent(state, viewModel, selectArticle)
             }
         }
         Divider(
@@ -100,12 +97,16 @@ private fun BottomTab(state: HomeViewState, viewModel: HomeViewModel) {
 }
 
 @Composable
-private fun ListContent(state: HomeViewState, viewModel: HomeViewModel) {
+private fun ListContent(
+    state: HomeViewState,
+    viewModel: HomeViewModel,
+    selectArticle: (String) -> Unit
+) {
     when (state.tab) {
         HomeCategory.Image -> ImageList(state, viewModel)
-        HomeCategory.ANDROID -> ArticleList(state, viewModel)
-        HomeCategory.IOS -> ArticleList(state, viewModel)
-        HomeCategory.WEB -> ArticleList(state, viewModel)
+        HomeCategory.ANDROID -> ArticleList(state, viewModel, selectArticle)
+        HomeCategory.IOS -> ArticleList(state, viewModel, selectArticle)
+        HomeCategory.WEB -> ArticleList(state, viewModel, selectArticle)
     }
 }
 
@@ -133,12 +134,16 @@ private fun ImageList(state: HomeViewState, viewModel: HomeViewModel) {
 }
 
 @Composable
-private fun ArticleList(state: HomeViewState, viewModel: HomeViewModel) {
+private fun ArticleList(
+    state: HomeViewState,
+    viewModel: HomeViewModel,
+    selectArticle: (String) -> Unit,
+) {
     val scrollState = viewModel.scrollState as LazyListState
 
     LazyColumn(state = scrollState) {
         items(state.stuffs, key = { it.id }) { stuff: Stuff ->
-            ArticleStuff(stuff)
+            ArticleStuff(stuff, selectArticle)
         }
     }
     scrollState.AutoLoadMore(shouldLoadMore = { lastIndex: Int, totalNumber: Int ->
@@ -163,38 +168,37 @@ private fun ImageStuff(stuff: Stuff) {
                     .fillMaxWidth()
                     .heightIn(min = 123.dp, max = 390.dp),
             )
-            Text(
-                text = stuff.desc,
-                color = MaterialTheme.colors.onBackground,
-                style = MaterialTheme.typography.subtitle1,
-                modifier = Modifier.padding(8.dp),
-                fontSize = 14.sp,
-                lineHeight = 20.sp,
-            )
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                Text(
+                    text = stuff.desc,
+                    style = MaterialTheme.typography.subtitle2,
+                    modifier = Modifier.padding(8.dp),
+                    lineHeight = 20.sp,
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun ArticleStuff(stuff: Stuff) {
+private fun ArticleStuff(stuff: Stuff, selectArticle: (String) -> Unit) {
     Column(modifier = Modifier
         .clickable {
-            // TODO: 2021/7/27 view article
+            selectArticle(stuff.url)
         }
         .padding(horizontal = 16.dp)) {
         Text(
             text = stuff.title,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .padding(top = 16.dp, bottom = 8.dp),
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
         )
         Text(
             text = stuff.desc,
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.body1,
             maxLines = 3,
             lineHeight = 20.sp,
             overflow = TextOverflow.Ellipsis,
@@ -203,10 +207,12 @@ private fun ArticleStuff(stuff: Stuff) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .padding(top = 8.dp, bottom = 16.dp),
         ) {
-            Text(text = stuff.author, fontSize = 12.sp)
-            Text(text = stuff.publishedAt, fontSize = 12.sp)
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                Text(text = stuff.author, style = MaterialTheme.typography.caption)
+                Text(text = stuff.publishedAt, style = MaterialTheme.typography.caption)
+            }
         }
         Divider()
     }
@@ -251,5 +257,5 @@ private fun ArticleStuffPreview() {
         url = "https://github.com/xiaobinwu/readIt",
         views = 96,
     )
-    ArticleStuff(stuff)
+    ArticleStuff(stuff) {}
 }

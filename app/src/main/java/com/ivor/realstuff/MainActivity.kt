@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import com.ivor.realstuff.ui.home.HomeScreen
 import com.ivor.realstuff.ui.theme.RealStuffTheme
 
 class MainActivity : ComponentActivity() {
@@ -15,7 +14,7 @@ class MainActivity : ComponentActivity() {
             RealStuffTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    HomeScreen()
+                    NavGraph()
                 }
             }
         }

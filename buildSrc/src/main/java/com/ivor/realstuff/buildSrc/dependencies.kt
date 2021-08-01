@@ -42,6 +42,7 @@ object Libs {
     object AndroidX {
         const val appcompat = "androidx.appcompat:appcompat:1.3.0"
         const val palette = "androidx.palette:palette:1.0.0"
+        const val navigation = "androidx.navigation:navigation-compose:2.4.0-alpha04"
 
         const val coreKtx = "androidx.core:core-ktx:1.6.0-rc01"
 
