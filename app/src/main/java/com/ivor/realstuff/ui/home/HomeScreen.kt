@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.insets.statusBarsHeight
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ivor.realstuff.model.Stuff
@@ -28,7 +29,7 @@ import com.ivor.realstuff.util.supportWideScreen
 private const val LOAD_MORE_THRESHOLD = 0.6F
 
 @Composable
-fun HomeScreen(selectArticle: (String) -> Unit) {
+fun HomeScreen(selectArticle: (String) -> Unit, viewImage: (String) -> Unit) {
     val viewModel: HomeViewModel = viewModel()
     val state by viewModel.state.collectAsState()
     // TODO: 2021/7/19 modify refresh condition
@@ -39,6 +40,9 @@ fun HomeScreen(selectArticle: (String) -> Unit) {
     }
 
     Column {
+        Spacer(
+            Modifier.statusBarsHeight()
+        )
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -50,7 +54,7 @@ fun HomeScreen(selectArticle: (String) -> Unit) {
                     viewModel.refresh()
                 }
             ) {
-                ListContent(state, viewModel, selectArticle)
+                ListContent(state, viewModel, selectArticle, viewImage)
             }
         }
         Divider(
@@ -100,10 +104,11 @@ private fun BottomTab(state: HomeViewState, viewModel: HomeViewModel) {
 private fun ListContent(
     state: HomeViewState,
     viewModel: HomeViewModel,
-    selectArticle: (String) -> Unit
+    selectArticle: (String) -> Unit,
+    viewImage: (String) -> Unit,
 ) {
     when (state.tab) {
-        HomeCategory.Image -> ImageList(state, viewModel)
+        HomeCategory.Image -> ImageList(state, viewModel, viewImage)
         HomeCategory.ANDROID -> ArticleList(state, viewModel, selectArticle)
         HomeCategory.IOS -> ArticleList(state, viewModel, selectArticle)
         HomeCategory.WEB -> ArticleList(state, viewModel, selectArticle)
@@ -111,7 +116,7 @@ private fun ListContent(
 }
 
 @Composable
-private fun ImageList(state: HomeViewState, viewModel: HomeViewModel) {
+private fun ImageList(state: HomeViewState, viewModel: HomeViewModel, viewImage: (String) -> Unit) {
     val scrollState = viewModel.scrollState as ScrollState
     Column(
         modifier = Modifier
@@ -122,7 +127,7 @@ private fun ImageList(state: HomeViewState, viewModel: HomeViewModel) {
             modifier = Modifier.padding(4.dp)
         ) {
             state.stuffs.map { stuff ->
-                ImageStuff(stuff)
+                ImageStuff(stuff, viewImage)
             }
         }
     }
@@ -154,10 +159,10 @@ private fun ArticleList(
 }
 
 @Composable
-private fun ImageStuff(stuff: Stuff) {
+private fun ImageStuff(stuff: Stuff, viewImage: (String) -> Unit) {
     Surface(modifier = Modifier
         .clickable {
-            // TODO: 2021/7/27 view image
+            viewImage(stuff.id)
         }
         .padding(4.dp)) {
         Column {
@@ -236,7 +241,7 @@ private fun ImageStuffPreview() {
         url = "http://gank.io/images/dc75cbde1d98448183e2f9514b4d1320",
         views = 8200,
     )
-    ImageStuff(stuff = imageStuff)
+    ImageStuff(stuff = imageStuff) {}
 }
 
 @Preview("ArticleStuff", showBackground = true)

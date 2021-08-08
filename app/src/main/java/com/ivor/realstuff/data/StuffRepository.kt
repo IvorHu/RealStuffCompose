@@ -4,8 +4,10 @@ import android.util.Log
 import com.ivor.realstuff.model.HttpResult
 import com.ivor.realstuff.model.Stuff
 import com.ivor.realstuff.util.DEFAULT_BATCH_COUNT
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 
 class StuffRepository(
     private val category: String,
@@ -46,4 +48,9 @@ class StuffRepository(
         }
         return stuffs.value
     }
+
+    fun queryStuffIndex(id: String): Flow<Int> = stuffs.map { stuffList ->
+        stuffList.indexOfFirst { it.id == id }
+    }
+
 }

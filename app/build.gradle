@@ -67,6 +67,7 @@ dependencies {
 
     implementation Libs.Accompanist.swipeRefresh
     implementation Libs.Accompanist.insets
+    implementation Libs.Accompanist.pager
 
     implementation Libs.AndroidX.Lifecycle.viewmodel
     implementation Libs.AndroidX.Lifecycle.viewModelCompose

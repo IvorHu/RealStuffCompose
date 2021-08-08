@@ -18,18 +18,25 @@ package com.ivor.realstuff.util
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.IntOffset
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
+import kotlin.math.roundToInt
 
 /**
  * A wrapper around [Image] and [rememberImagePainter], setting a
@@ -38,9 +45,10 @@ import coil.compose.rememberImagePainter
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun NetworkImage(
-    url: String,
-    contentDescription: String?,
     modifier: Modifier = Modifier,
+    url: String,
+    imageModifier: Modifier = Modifier.fillMaxSize(),
+    contentDescription: String = "",
     contentScale: ContentScale = ContentScale.Crop,
     placeholderColor: Color? = MaterialTheme.colors.onSurface.copy(alpha = 0.2f)
         .compositeOver(MaterialTheme.colors.surface)
@@ -54,7 +62,7 @@ fun NetworkImage(
             painter = painter,
             contentDescription = contentDescription,
             contentScale = contentScale,
-            modifier = Modifier.fillMaxSize()
+            modifier = imageModifier.align(Alignment.Center),
         )
 
         if (painter.state is ImagePainter.State.Loading && placeholderColor != null) {
@@ -65,4 +73,36 @@ fun NetworkImage(
             )
         }
     }
+}
+
+@Composable
+fun ZoomableNetworkImage(modifier: Modifier = Modifier, url: String) {
+    // TODO: 2021/8/1 optimize zoomable image
+    var zoom by remember { mutableStateOf(1f) }
+    var offsetX by remember { mutableStateOf(0f) }
+    var offsetY by remember { mutableStateOf(0f) }
+
+    NetworkImage(
+        modifier = modifier,
+        url = url,
+        imageModifier = Modifier
+            .fillMaxSize()
+            .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+            .graphicsLayer {
+                scaleX = zoom
+                scaleY = zoom
+            }
+            .pointerInput(Unit) {
+                detectTransformGestures { _, pan, gestureZoom, _ ->
+                    zoom = when {
+                        zoom < 0.5f -> 0.5f
+                        zoom > 3f -> 3f
+                        else -> gestureZoom * zoom
+                    }
+                    val x = pan.x * zoom
+                    val y = pan.y * zoom
+                    offsetX += x
+                    offsetY += y
+                }
+            })
 }

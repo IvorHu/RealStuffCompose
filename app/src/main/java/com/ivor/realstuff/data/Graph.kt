@@ -1,5 +1,6 @@
 package com.ivor.realstuff.data
 
+import com.ivor.realstuff.util.DEFAULT_BATCH_IMAGES_COUNT
 import com.ivor.realstuff.util.HomeCategory
 
 
@@ -8,7 +9,8 @@ object Graph {
     val imagesRepository by lazy {
         StuffRepository(
             HomeCategory.Image.category,
-            HomeCategory.Image.type
+            HomeCategory.Image.type,
+            DEFAULT_BATCH_IMAGES_COUNT,
         )
     }
     val androidRepository by lazy {
