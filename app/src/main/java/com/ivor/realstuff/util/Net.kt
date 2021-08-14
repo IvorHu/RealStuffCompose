@@ -1,4 +1,4 @@
-package com.ivor.realstuff.data
+package com.ivor.realstuff.util
 
 import com.ivor.realstuff.model.HttpResult
 import com.ivor.realstuff.model.PagedResult
@@ -14,9 +14,19 @@ import retrofit2.http.Path
 import java.io.IOException
 
 
-private const val BASE_URL = "https://gank.io/api/v2/"
-
 interface GankApi {
+    companion object {
+        private const val BASE_URL = "https://gank.io/api/v2/"
+
+        fun create(): GankApi {
+            val retrofit: Retrofit = Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(OkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+            return retrofit.create(GankApi::class.java)
+        }
+    }
 
     @GET("data/category/{category}/type/{type}/page/{page}/count/{count}")
     suspend fun categoryStuffPaged(
@@ -26,15 +36,6 @@ interface GankApi {
         @Path("count") count: Int,
     ): Response<PagedResult<List<Stuff>>>
 
-}
-
-object GankApiManager {
-    private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(OkHttpClient())
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-    val api = retrofit.create(GankApi::class.java)
 }
 
 suspend fun <T> apiCall(

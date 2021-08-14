@@ -15,7 +15,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.insets.statusBarsHeight
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -29,8 +28,11 @@ import com.ivor.realstuff.util.supportWideScreen
 private const val LOAD_MORE_THRESHOLD = 0.6F
 
 @Composable
-fun HomeScreen(selectArticle: (String) -> Unit, viewImage: (String) -> Unit) {
-    val viewModel: HomeViewModel = viewModel()
+fun HomeScreen(
+    viewModel: HomeViewModel,
+    selectArticle: (String) -> Unit,
+    viewImage: (String) -> Unit
+) {
     val state by viewModel.state.collectAsState()
     // TODO: 2021/7/19 modify refresh condition
     if (state.stuffs.isEmpty()) {

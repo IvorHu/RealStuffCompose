@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -29,8 +28,7 @@ import com.ivor.realstuff.util.NetworkImage
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun ViewImageScreen(startId: String) {
-    val viewModel: ImageViewModel = viewModel()
+fun ViewImageScreen(viewModel: ImageViewModel, startId: String) {
     val startIndex by viewModel.queryImageIndex(startId).collectAsState(initial = -1)
     val images by viewModel.imagesFlow.collectAsState(initial = emptyList())
     val pagerState = rememberPagerState(pageCount = images.size)

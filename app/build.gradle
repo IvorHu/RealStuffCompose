@@ -4,6 +4,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -77,4 +78,8 @@ dependencies {
 
     implementation Libs.Retrofit.core
     implementation Libs.Retrofit.converterGson
+
+    implementation Libs.Hilt.core
+    kapt Libs.Hilt.hiltCompiler
+    implementation Libs.Hilt.navigationCompose
 }

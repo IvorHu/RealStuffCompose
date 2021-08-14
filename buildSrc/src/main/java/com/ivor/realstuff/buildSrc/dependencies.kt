@@ -96,4 +96,13 @@ object Libs {
     object Coil {
         const val coilCompose = "io.coil-kt:coil-compose:1.3.0"
     }
+
+    object Hilt {
+        private const val version = "2.38.1"
+        private const val androidXVersion = "1.0.0-alpha03"
+        const val gradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:$version"
+        const val core = "com.google.dagger:hilt-android:$version"
+        const val hiltCompiler = "com.google.dagger:hilt-android-compiler:$version"
+        const val navigationCompose = "androidx.hilt:hilt-navigation-compose:$androidXVersion"
+    }
 }

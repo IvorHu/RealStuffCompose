@@ -5,6 +5,7 @@ import android.content.Intent.ACTION_VIEW
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
@@ -14,6 +15,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.ivor.realstuff.ui.home.HomeScreen
+import com.ivor.realstuff.ui.home.HomeViewModel
+import com.ivor.realstuff.ui.image.ImageViewModel
 import com.ivor.realstuff.ui.image.ViewImageScreen
 
 object Destination {
@@ -34,11 +37,16 @@ fun NavGraph(
 
     NavHost(navController, startDestination) {
         composable(Destination.ROUTE_HOME) {
-            HomeScreen(selectArticle = { url ->
-                actions.openArticle(url)
-            }, viewImage = { id ->
-                actions.viewImage(id, it)
-            })
+            val viewModel: HomeViewModel = hiltViewModel()
+            HomeScreen(
+                viewModel = viewModel,
+                selectArticle = { url ->
+                    actions.openArticle(url)
+                },
+                viewImage = { id ->
+                    actions.viewImage(id, it)
+                },
+            )
         }
 
         composable(
@@ -49,7 +57,8 @@ fun NavGraph(
         ) { backStackEntry ->
             val arguments = requireNotNull(backStackEntry.arguments)
             val startId = requireNotNull(arguments.getString(Destination.KEY_IMAGE_ID))
-            ViewImageScreen(startId = startId)
+            val viewModel: ImageViewModel = hiltViewModel()
+            ViewImageScreen(viewModel = viewModel, startId = startId)
         }
     }
 }
