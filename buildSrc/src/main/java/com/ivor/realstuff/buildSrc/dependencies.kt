@@ -8,7 +8,7 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.14.0"
+        private const val version = "0.15.0"
         const val insets = "com.google.accompanist:accompanist-insets:$version"
         const val swipeRefresh = "com.google.accompanist:accompanist-swiperefresh:$version"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
@@ -42,6 +42,7 @@ object Libs {
     object AndroidX {
         const val appcompat = "androidx.appcompat:appcompat:1.3.0"
         const val palette = "androidx.palette:palette:1.0.0"
+        const val navigation = "androidx.navigation:navigation-compose:2.4.0-alpha04"
 
         const val coreKtx = "androidx.core:core-ktx:1.6.0-rc01"
 
@@ -94,5 +95,14 @@ object Libs {
 
     object Coil {
         const val coilCompose = "io.coil-kt:coil-compose:1.3.0"
+    }
+
+    object Hilt {
+        private const val version = "2.38.1"
+        private const val androidXVersion = "1.0.0-alpha03"
+        const val gradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:$version"
+        const val core = "com.google.dagger:hilt-android:$version"
+        const val hiltCompiler = "com.google.dagger:hilt-android-compiler:$version"
+        const val navigationCompose = "androidx.hilt:hilt-navigation-compose:$androidXVersion"
     }
 }

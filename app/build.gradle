@@ -4,6 +4,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -54,6 +55,7 @@ dependencies {
 
     implementation Libs.Material.core
     implementation Libs.AndroidX.appcompat
+    implementation Libs.AndroidX.navigation
     implementation Libs.AndroidX.coreKtx
     implementation Libs.AndroidX.Activity.activityCompose
     implementation Libs.AndroidX.Compose.foundation
@@ -65,6 +67,8 @@ dependencies {
     implementation Libs.AndroidX.Compose.tooling
 
     implementation Libs.Accompanist.swipeRefresh
+    implementation Libs.Accompanist.insets
+    implementation Libs.Accompanist.pager
 
     implementation Libs.AndroidX.Lifecycle.viewmodel
     implementation Libs.AndroidX.Lifecycle.viewModelCompose
@@ -74,4 +78,8 @@ dependencies {
 
     implementation Libs.Retrofit.core
     implementation Libs.Retrofit.converterGson
+
+    implementation Libs.Hilt.core
+    kapt Libs.Hilt.hiltCompiler
+    implementation Libs.Hilt.navigationCompose
 }
